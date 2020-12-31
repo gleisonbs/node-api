@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "git@github.com:gleisonbs/node-api.git",
   "author": "Gleison Batista Soares <gleison.batista@fs.com.br>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "standard": "^16.0.3"
+  }
 }
