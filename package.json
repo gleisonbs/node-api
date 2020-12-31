@@ -1,0 +1,8 @@
+{
+  "name": "node-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:gleisonbs/node-api.git",
+  "author": "Gleison Batista Soares <gleison.batista@fs.com.br>",
+  "license": "MIT"
+}
