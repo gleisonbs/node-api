@@ -78,4 +78,31 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
     expect(httpResponse.statusCode).toBe(401)
   })
+
+  it('Should return 500 if no AuthUseCase is passed to LoginRouter', async () => {
+    const sut = new LoginRouter()
+    const httpRequest = {
+      body: {
+
+        email: 'dummy_email@email.com',
+        password: 'dummy_password'
+      }
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  it('Should return 500 if AuthUseCase has no auth method', async () => {
+    const authUseCase = {}
+    const sut = new LoginRouter(authUseCase)
+    const httpRequest = {
+      body: {
+
+        email: 'dummy_email@email.com',
+        password: 'dummy_password'
+      }
+    }
+    const httpResponse = sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
 })
