@@ -161,7 +161,35 @@ describe('Login Router', () => {
     const sut = new LoginRouter(authUseCase)
     const httpRequest = {
       body: {
+        email: 'dummy_email@email.com',
+        password: 'dummy_password'
+      }
+    }
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
 
+  it('Should return 500 if no EmailValidator is provided', async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy()
+    authUseCaseSpy.accessToken = 'dummy_token'
+    const sut = new LoginRouter(authUseCaseSpy)
+    const httpRequest = {
+      body: {
+        email: 'dummy_email@email.com',
+        password: 'dummy_password'
+      }
+    }
+    const httpResponse = await sut.route(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+  })
+
+  it('Should return 500 if EmailValidator has no isValid method', async () => {
+    const authUseCaseSpy = makeAuthUseCaseSpy()
+    authUseCaseSpy.accessToken = 'dummy_token'
+    const emailValidatorSpy = {}
+    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
+    const httpRequest = {
+      body: {
         email: 'dummy_email@email.com',
         password: 'dummy_password'
       }
