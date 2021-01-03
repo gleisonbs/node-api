@@ -15,7 +15,7 @@
     "standard": "^16.0.3"
   },
   "scripts": {
-    "test": "jest --watchAll",
-    "test:staged": "jest"
+    "test": "jest --watch --silent --colors --noStackTrace",
+    "test:staged": "jest --passWithNoTests --findRelatedTests"
   }
 }
