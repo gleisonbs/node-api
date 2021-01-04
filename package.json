@@ -6,7 +6,9 @@
   "author": "Gleison Batista Soares <gleison.batista@fs.com.br>",
   "license": "MIT",
   "standard": {
-    "env": ["jest"]
+    "env": [
+      "jest"
+    ]
   },
   "devDependencies": {
     "husky": "^4.3.6",
@@ -20,5 +22,8 @@
     "test:unit": "yarn test -- --watchAll -c jest.unit.config.js",
     "test:staged": "yarn test -- --findRelatedTests",
     "test:ci": "yarn test -- --coverage"
+  },
+  "dependencies": {
+    "validator": "^13.5.2"
   }
 }
