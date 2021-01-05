@@ -1,6 +1,17 @@
 const { MissingParamError, InvalidParamError } = require('../../utils/errors')
 const AuthUseCase = require('./auth-usecase')
 
+const makeTokenGeneratorWithError = () => {
+  class TokenGeneratorWithError {
+    async generate (userId) {
+      throw new Error()
+    }
+  }
+
+  const tokenGeneratorWithError = new TokenGeneratorWithError()
+  return tokenGeneratorWithError
+}
+
 const makeTokenGeneratorSpy = () => {
   class TokenGeneratorSpy {
     async generate (userId) {
@@ -12,6 +23,17 @@ const makeTokenGeneratorSpy = () => {
   const tokenGeneratorSpy = new TokenGeneratorSpy()
   tokenGeneratorSpy.accessToken = 'accessToken'
   return tokenGeneratorSpy
+}
+
+const makeEncrypterWithError = () => {
+  class EncrypterWithError {
+    async compare (password, hashedPassword) {
+      throw new Error()
+    }
+  }
+
+  const encrypterWithError = new EncrypterWithError()
+  return encrypterWithError
 }
 
 const makeEncrypterSpy = () => {
@@ -26,6 +48,17 @@ const makeEncrypterSpy = () => {
   const encrypterSpy = new EncrypterSpy()
   encrypterSpy.isValid = true
   return encrypterSpy
+}
+
+const makeLoadUserByEmailRepositoryWithError = () => {
+  class LoadUserByEmailRepositoryWithError {
+    async load (email) {
+      throw new Error()
+    }
+  }
+
+  const loadUserByEmailRepositoryWithError = new LoadUserByEmailRepositoryWithError()
+  return loadUserByEmailRepositoryWithError
 }
 
 const makeLoadUserByEmailRepositorySpy = () => {
@@ -172,6 +205,28 @@ describe('Auth UseCase', () => {
       new AuthUseCase({
         loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
         encrypter: null
+      })
+    ]
+
+    for (const sut of suts) {
+      const promise = sut.auth('test.email@email.com', 'password')
+      expect(promise).rejects.toThrow()
+    }
+  })
+
+  it('Should throw if dependency throws', async () => {
+    const suts = [
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositoryWithError()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterWithError()
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: makeEncrypterSpy(),
+        tokenGenerator: makeTokenGeneratorWithError()
       })
     ]
 
