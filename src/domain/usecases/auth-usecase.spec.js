@@ -158,4 +158,26 @@ describe('Auth UseCase', () => {
     expect(accessToken).toBe(tokenGeneratorSpy.accessToken)
     expect(accessToken).toBeTruthy()
   })
+
+  it('Should throw if invalid dependencies are provided', async () => {
+    const invalid = {}
+    const suts = [
+      new AuthUseCase(),
+      new AuthUseCase({
+        loadUserByEmailRepository: null
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: invalid
+      }),
+      new AuthUseCase({
+        loadUserByEmailRepository: makeLoadUserByEmailRepositorySpy(),
+        encrypter: null
+      })
+    ]
+
+    for (const sut of suts) {
+      const promise = sut.auth('test.email@email.com', 'password')
+      expect(promise).rejects.toThrow()
+    }
+  })
 })
