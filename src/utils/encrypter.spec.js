@@ -28,7 +28,7 @@ describe('Encrypter', () => {
     expect(bcrypt.hashedValue).toBe('hashed_value')
   })
 
-  it('Should throw if called without correct number of parameters', async () => {
+  it('Should throw if called with incorrect number of parameters', async () => {
     const sut = makeSut()
 
     expect(sut.compare()).rejects.toThrow(new MissingParamError('value'))
