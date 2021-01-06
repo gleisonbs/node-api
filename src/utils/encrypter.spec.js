@@ -7,22 +7,26 @@ class Encrypter {
   }
 }
 
+const makeSut = () => {
+  return new Encrypter()
+}
+
 describe('Encrypter', () => {
   it('Should return true if bcrypt returns true', async () => {
-    const sut = new Encrypter()
+    const sut = makeSut()
     const isValid = await sut.compare('value', 'hashed_value')
     expect(isValid).toBe(true)
   })
 
   it('Should return false if bcrypt returns false', async () => {
-    const sut = new Encrypter()
+    const sut = makeSut()
     bcrypt.isValid = false
     const isValid = await sut.compare('value', 'hashed_value')
     expect(isValid).toBe(false)
   })
 
   it('Should call bcrypt with correct values', async () => {
-    const sut = new Encrypter()
+    const sut = makeSut()
 
     await sut.compare('value', 'hashed_value')
     expect(bcrypt.value).toBe('value')
