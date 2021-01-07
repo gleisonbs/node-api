@@ -1,4 +1,6 @@
 const MongoHelper = require('../helpers/mongo-helper')
+const MissingParamError = require('../../utils/errors/missing-param-error')
+const InvalidParamError = require('../../utils/errors/invalid-param-error')
 const LoadUserByEmailRepository = require('./load-user-by-email-repository')
 
 let db
@@ -45,5 +47,26 @@ describe('LoadUserByEmail Repositoty', () => {
       _id: userInserted.ops[0]._id,
       password: userInserted.ops[0].password
     })
+  })
+
+  it('Should throw if no userModel is provided', async () => {
+    const sut = new LoadUserByEmailRepository()
+
+    const promise = sut.load('test.email@email.com')
+    expect(promise).rejects.toThrow(new MissingParamError('userModel'))
+  })
+
+  it('Should throw if userModel has no findOne method', async () => {
+    const sut = new LoadUserByEmailRepository({})
+
+    const promise = sut.load('test.email@email.com')
+    expect(promise).rejects.toThrow(new InvalidParamError('userModel'))
+  })
+
+  it('Should throw if email is not provided', async () => {
+    const { sut } = makeSut()
+
+    const promise = sut.load()
+    expect(promise).rejects.toThrow(new MissingParamError('email'))
   })
 })
