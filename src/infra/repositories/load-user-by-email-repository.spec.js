@@ -6,14 +6,22 @@ class LoadUserByEmailRepository {
   }
 
   async load (email) {
-    const user = await this.userModel.findOne({ email })
+    const user = await this.userModel.findOne(
+      { email },
+      { projection: { password: 1 } }
+    )
     return user
   }
 }
 
+let connection, db
+const makeSut = () => {
+  const userModel = db.collection('users')
+  const sut = new LoadUserByEmailRepository(userModel)
+  return { sut, userModel }
+}
+
 describe('LoadUserByEmail Repositoty', () => {
-  let connection
-  let db
   beforeAll(async () => {
     connection = await MongoClient.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
@@ -31,19 +39,27 @@ describe('LoadUserByEmail Repositoty', () => {
   })
 
   it('Should return null if no user is found', async () => {
-    const userModel = await db.collection('users')
-    const sut = new LoadUserByEmailRepository(userModel)
+    const { sut } = makeSut()
     const user = await sut.load('invalid.email@email.com')
     expect(user).toBeNull()
   })
 
   it('Should return user if an user is found', async () => {
-    const userModel = await db.collection('users')
+    const { sut, userModel } = makeSut()
     const email = 'valid.email@email.com'
-    await userModel.insertOne({ email })
 
-    const sut = new LoadUserByEmailRepository(userModel)
-    const user = await sut.load(email)
-    expect(user.email).toBe(email)
+    const userInserted = await userModel.insertOne({
+      email,
+      name: 'test_user',
+      age: 50,
+      state: 'test_state',
+      password: 'hashed_password'
+    })
+    const userRetrieved = await sut.load(email)
+
+    expect(userRetrieved).toEqual({
+      _id: userInserted.ops[0]._id,
+      password: userInserted.ops[0].password
+    })
   })
 })
