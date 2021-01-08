@@ -2,8 +2,8 @@ const MongoHelper = require('../helpers/mongo-helper')
 const MissingParamError = require('../../utils/errors/missing-param-error')
 const InvalidParamError = require('../../utils/errors/invalid-param-error')
 const LoadUserByEmailRepository = require('./load-user-by-email-repository')
-
 let db
+
 const makeSut = () => {
   const userModel = db.collection('users')
   const sut = new LoadUserByEmailRepository(userModel)
