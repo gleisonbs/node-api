@@ -13,5 +13,7 @@ describe('App Setup', () => {
 
     const response = await request(app).get('/')
     expect(response.headers['access-control-allow-origin']).toBe('*')
+    expect(response.headers['access-control-allow-headers']).toBe('*')
+    expect(response.headers['access-control-allow-methods']).toBe('*')
   })
 })
