@@ -12,6 +12,14 @@ class UpdateAccessTokenRepository {
       throw new MissingParamError('userModel')
     }
 
+    if (!userId) {
+      throw new MissingParamError('userId')
+    }
+
+    if (!accessToken) {
+      throw new MissingParamError('accessToken')
+    }
+
     await this.userModel.updateOne(
       { _id: userId },
       {
@@ -77,5 +85,14 @@ describe('UpdateAccessToken Repository', () => {
     const promise = sut.update(userInserted.ops[0]._id, 'valid_token')
 
     expect(promise).rejects.toThrow(new MissingParamError('userModel'))
+  })
+
+  it('Should throw if no params are provided', async () => {
+    const { sut } = makeSut()
+
+    expect(sut.update()).rejects.toThrow(new MissingParamError('userId'))
+    expect(sut.update('user_id')).rejects.toThrow(
+      new MissingParamError('accessToken')
+    )
   })
 })
