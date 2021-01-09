@@ -9,7 +9,7 @@ const makeSut = () => {
   const emailValidatorSpy = makeEmailValidatorSpy()
   emailValidatorSpy.isEmailValid = true
 
-  const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
+  const sut = new LoginRouter({ authUseCase: authUseCaseSpy, emailValidator: emailValidatorSpy })
   return { sut, authUseCaseSpy, emailValidatorSpy }
 }
 
