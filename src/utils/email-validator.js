@@ -4,7 +4,6 @@ const validator = require('validator')
 module.exports = class EmailValidator {
   isValid (email) {
     if (!email) {
-      console.log('THROWING')
       throw new MissingParamError('email')
     }
 
