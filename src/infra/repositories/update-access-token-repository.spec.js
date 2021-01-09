@@ -1,7 +1,7 @@
 const MongoHelper = require('../helpers/mongo-helper')
 const MissingParamError = require('../../utils/errors/missing-param-error')
 const UpdateAccessTokenRepository = require('./update-access-token-repository')
-let db
+let userModel
 
 const makeSut = () => {
   return new UpdateAccessTokenRepository()
@@ -11,11 +11,10 @@ describe('UpdateAccessToken Repository', () => {
   let userId
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL)
-    db = await MongoHelper.getDb()
+    userModel = await MongoHelper.getCollection('users')
   })
 
   beforeEach(async () => {
-    const userModel = db.collection('users')
     await userModel.deleteMany()
     const insertedUser = await userModel.insertOne({
       email: 'test.email@email.com'
@@ -31,7 +30,6 @@ describe('UpdateAccessToken Repository', () => {
     const sut = makeSut()
 
     await sut.update(userId, 'valid_token')
-    const userModel = db.collection('users')
     const updatedUser = await userModel.findOne({ _id: userId })
     expect(updatedUser.accessToken).toBe('valid_token')
   })

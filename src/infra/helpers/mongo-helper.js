@@ -15,10 +15,10 @@ module.exports = {
     this.client = null
     this.db = null
   },
-  async getDb () {
+  async getCollection (name) {
     if (!this.client || !this.client.isConnected()) {
       await this.connect(this.url, this.dbName)
     }
-    return this.db
+    return this.db.collection(name)
   }
 }
